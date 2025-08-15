@@ -19,6 +19,3 @@ gradlew/
 *.log
 *.png
 # Project exclude paths
-/build/
-/build/classes/java/main/
-/build/classes/java/test/

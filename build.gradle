@@ -1,0 +1,53 @@
+plugins {
+    id 'java'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.seleniumhq.selenium:selenium-java:4.34.0'
+    implementation 'org.testng:testng:7.11.0'
+    implementation 'io.github.bonigarcia:webdrivermanager:6.2.0'
+    // here we connecting to the logback-classic library
+    implementation 'ch.qos.logback:logback-classic:1.5.18'
+}
+
+test {
+    useTestNG()
+}
+
+task check_qa(type:Test){
+    useTestNG() {
+        suites 'src/test/resources/testng.xml'
+    }
+
+    if (project.hasProperty('browser')) {
+        systemProperty 'browser', "${browser}"
+    }
+}
+
+def registerTask(String taskName, String suitePath) {
+    // why tasks not task
+    tasks.register(taskName, Test) {
+        useTestNG(){
+            suites suitePath
+        }
+        if (project.hasProperty('browser')) {
+            systemProperty'browser', "${browser}"
+        }
+    }
+}
+
+registerTask('regression', 'src/test/resources/regression.xml')
+registerTask('negative','src/test/resources/negative.xml')
+registerTask('groups','src/test/resources/groups.xml')
+
+ // comand in terminal: from the folder where is the project: gradle clean test
+// clean is needed to clean the previous report in index.html file report
+// safaridriver --enable
+// gradle -Pbrowser=safari clean regression
